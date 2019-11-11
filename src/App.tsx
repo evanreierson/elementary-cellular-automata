@@ -1,26 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import ApolloClient from 'apollo-boost';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloProvider } from '@apollo/react-hooks';
+
+
+
+const client = new ApolloClient({
+  cache: new InMemoryCache()
+});
+
+
+const App = () => (
+<ApolloProvider client={client}>
+  <div className="text-purple-600">
+    Hello TypeScript, Apollo, and Tailwind
+  </div>
+</ApolloProvider>
+);
 
 export default App;
