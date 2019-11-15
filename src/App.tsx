@@ -4,15 +4,39 @@ import ApolloClient from "apollo-boost";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloProvider } from "@apollo/react-hooks";
 
-import { ViewGrid } from "./components/grid";
+import {
+  ViewEnvironment,
+  ViewRuleInput,
+  ViewDensityInput
+} from "./components/environment";
+import { resolvers } from "./resolvers";
+import { generateRows } from "./ecaHelpers";
+
+const cache = new InMemoryCache();
+cache.writeData({
+  data: {
+    currentRule: 45,
+    density: 0.1,
+    cursor: 0,
+    size: 50,
+    environmentState: generateRows(50, 0.1, 45)
+  }
+});
 
 const client = new ApolloClient({
-  cache: new InMemoryCache()
+  cache,
+  resolvers: resolvers
 });
 
 const App = () => (
   <ApolloProvider client={client}>
-    <ViewGrid />
+    <div className="flex flex-row">
+      <ViewEnvironment />
+      <div>
+        <ViewRuleInput />
+        <ViewDensityInput />
+      </div>
+    </div>
   </ApolloProvider>
 );
 
