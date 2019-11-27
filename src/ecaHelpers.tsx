@@ -22,8 +22,9 @@ const generateRule = (decimal: number): Rule => {
   return rule;
 };
 
-export const nextRow = (currentRow: Cell[], rule: Rule): Cell[] => {
+export const nextRow = (currentRow: Cell[], rule: number): Cell[] => {
   let next: Cell[] = [];
+  let generatedRule = generateRule(rule);
   for (let i = 0; i < currentRow.length; i++) {
     let p: Pattern = 0b000;
 
@@ -31,7 +32,7 @@ export const nextRow = (currentRow: Cell[], rule: Rule): Cell[] => {
     p |= currentRow[mod(i, currentRow.length)] << 1;
     p |= currentRow[mod(i + 1, currentRow.length)];
 
-    next.push(rule[p as Pattern]); // wtf?
+    next.push(generatedRule[p as Pattern]); // wtf?
   }
   return next;
 };
@@ -54,9 +55,9 @@ export const generateRows = (
   ruleNumber: number
 ): Cell[][] => {
   let all_rows = [randomFirstRow(size, density)];
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < size - 1; i++) {
     let previous_row = all_rows[all_rows.length - 1];
-    all_rows.push(nextRow(previous_row, generateRule(ruleNumber)));
+    all_rows.push(nextRow(previous_row, ruleNumber));
   }
   return all_rows;
 };

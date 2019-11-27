@@ -44,7 +44,15 @@ export const GET_ENVIRONMENT_DETAILS = gql`
 `;
 
 export const GET_ENVIRONMENT = gql`
-  query getEnvironment {
-    environment @client
+  {
+    getEnvironment @client
+  }
+`;
+
+export const STEP_FORWARD = gql`
+  mutation stepForward {
+    stepForward @client {
+      success
+    }
   }
 `;

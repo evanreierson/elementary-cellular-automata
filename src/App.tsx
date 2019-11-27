@@ -7,7 +7,8 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import {
   ViewEnvironment,
   ViewRuleInput,
-  ViewDensityInput
+  ViewDensityInput,
+  ViewTimeControls
 } from "./components/environment";
 import { resolvers } from "./resolvers";
 import { generateRows } from "./ecaHelpers";
@@ -35,6 +36,7 @@ const App = () => (
       <div>
         <ViewRuleInput />
         <ViewDensityInput />
+        <ViewTimeControls />
       </div>
     </div>
   </ApolloProvider>

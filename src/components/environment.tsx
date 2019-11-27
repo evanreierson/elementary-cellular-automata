@@ -6,7 +6,8 @@ import {
   SET_DENSITY,
   GET_CURRENT_RULE,
   SET_RULE,
-  GET_ENVIRONMENT
+  GET_ENVIRONMENT,
+  STEP_FORWARD
 } from "../queries";
 import { Rule, Cell, Pattern } from "../types";
 
@@ -37,29 +38,27 @@ const ViewRow = ({ row }: { row: Cell[] }) => {
 };
 
 export const ViewEnvironment = () => {
-  const { loading, error, data } = useQuery<{ environment: Cell[][] }>(
-    GET_ENVIRONMENT
-  );
-
-  // .map((row: Cell[]) => {
-  //     return <ViewRow row={row} />;
-  //   }
+  const { loading, error, data } = useQuery<{
+    getEnvironment: { environment: Cell[][] };
+  }>(GET_ENVIRONMENT);
 
   if (loading) {
+    console.log("loading");
     return <p>loading...</p>;
-  }
-  if (error) {
-    console.log(error);
-    return <p>Something broke...</p>;
-  }
-  if (data) {
+  } else if (data) {
     console.log(data);
     return (
-      <div className="bg-gray-200 m-4 p-2 rounded-lg shadow-xl border-2 border-gray-400"></div>
+      <div className="bg-gray-200 m-4 p-2 rounded-lg shadow-xl border-2 border-gray-400">
+        {data.getEnvironment.environment.map((row: Cell[]) => {
+          return <ViewRow row={row} />;
+        })}
+      </div>
     );
+  } else if (error) {
+    console.log(error);
   }
 
-  return <p>dang</p>;
+  return <p>Something broke...</p>;
 };
 
 type DropdownType<T> = {
@@ -93,6 +92,40 @@ export const Dropdown = ({
   );
 };
 
+export const ViewTimeControls = () => {
+  const [stepForward] = useMutation(STEP_FORWARD);
+
+  const stepForwardCallback = () => {
+    stepForward({
+      refetchQueries: [{ query: GET_ENVIRONMENT }]
+    });
+  };
+
+  return (
+    <div>
+      <button
+        className="bg-gray-200 hover:bg-green-400 border-2 border-gray-400 p-2 rounded-l-lg"
+        type="button"
+      >
+        back
+      </button>
+      <button
+        className="bg-gray-200 hover:bg-green-400 border-t-2 border-b-2 border-gray-400 p-2"
+        type="button"
+      >
+        play/pause
+      </button>
+      <button
+        onClick={stepForwardCallback}
+        className="bg-gray-200 hover:bg-green-400  border-2 border-gray-400 p-2 rounded-r-lg"
+        type="button"
+      >
+        forward
+      </button>
+    </div>
+  );
+};
+
 export const ViewDensityInput = () => {
   const { loading, data } = useQuery<{ density: number }>(GET_DENSITY);
 
@@ -110,7 +143,7 @@ export const ViewDensityInput = () => {
       variables: { density: parseFloat(e.target.value) },
       refetchQueries: [
         {
-          query: GET_DENSITY
+          query: GET_ENVIRONMENT
         }
       ]
     });
@@ -145,7 +178,7 @@ export const ViewRuleInput = () => {
       variables: { currentRule: parseInt(e.target.value) },
       refetchQueries: [
         {
-          query: GET_CURRENT_RULE
+          query: GET_ENVIRONMENT
         }
       ]
     });
